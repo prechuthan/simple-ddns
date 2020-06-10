@@ -2,7 +2,7 @@ const fetch = require("node-fetch");
 
 // Gets current IP address
 const getIPAddr = async () => {
-  res = await fetch("http://icanhazip.com");
+  res = await fetch("https://icanhazip.com");
   body = (await res.text()).trim();
 
   return body;
