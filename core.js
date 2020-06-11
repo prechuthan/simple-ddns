@@ -8,6 +8,23 @@ const getIPAddr = async () => {
   return body;
 };
 
+// Get DNS Zone ID
+const getDNSZoneID = async () => {
+  const params = new URLSearchParams();
+  params.append("name", process.env.ROOT_DOMAIN);
+
+  res = await fetch("https://api.cloudflare.com/client/v4/zones?" + params, {
+    headers: {
+      Authorization: process.env.CF_API_TOKEN,
+    },
+  });
+  body = await res.json();
+
+  zone_id = body.result[0].id;
+
+  return zone_id;
+};
+
 // Get DNS Record (currently only tests API endpoint)
 const getDNSRec = async () => {
   res = await fetch("https://api.cloudflare.com/client/v4/user/tokens/verify", {
@@ -20,8 +37,9 @@ const getDNSRec = async () => {
   return body;
 };
 
-// Prints out IP address + DNS Record (currently only tests API endpoint)
+// Prints out IP address + CF Zone ID
 (async () => {
-  console.log(await getIPAddr());
-  console.log(await getDNSRec());
+  console.log("Public IP: " + (await getIPAddr()));
+  console.log("CF Zone ID: " + (await getDNSZoneID()));
+  // console.log(await getDNSRec());
 })();
