@@ -2,6 +2,7 @@ const fetch = require("node-fetch");
 
 const CF_API_TOKEN = process.env.CF_API_TOKEN;
 const ROOT_DOMAIN = process.env.ROOT_DOMAIN;
+const DDNS_DOMAIN = process.env.DDNS_DOMAIN;
 
 // Gets current IP address
 const getIPAddr = async () => {
@@ -28,7 +29,7 @@ async function getDNSZoneID(root_domain) {
   return zone_id;
 }
 
-// Get DNS Record (currently only tests API endpoint)
+// Get DNS Records for a given zone_id
 async function getDNSRec(zone_id) {
   res = await fetch(
     "https://api.cloudflare.com/client/v4/zones/" + zone_id + "/dns_records",
@@ -45,14 +46,28 @@ async function getDNSRec(zone_id) {
   return dns_recs;
 }
 
-// Prints out IP address + CF Zone ID
+// Get DNS Record ID from array of JSON dns records
+async function getDNSRecID(ddns_domain, dns_recs) {
+  for (let i = 0; i < dns_recs.length; i++) {
+    if (dns_recs[i].name === ddns_domain) {
+      return dns_recs[i].id;
+    }
+  }
+
+  return null;
+}
+
+// Prints out IP address + CF Zone ID + DNS Recs + DNS Rec ID
 (async () => {
-  const CUR_IP_ADDR = await getIPAddr();
-  console.log("Public IP: " + CUR_IP_ADDR);
+  const curIPAddr = await getIPAddr();
+  console.log(`Public IP: ${curIPAddr}`);
 
-  const ZONE_ID = await getDNSZoneID(ROOT_DOMAIN);
-  console.log("CF Zone ID: " + ZONE_ID);
+  const zoneID = await getDNSZoneID(ROOT_DOMAIN);
+  console.log(`CF Zone ID: ${zoneID}`);
 
-  const DNS_RECS = await getDNSRec(ZONE_ID);
-  console.log("DNS Records: " + DNS_RECS);
+  const dnsRecs = await getDNSRec(zoneID);
+  console.log(`DNS Records: ${dnsRecs}`);
+
+  const dnsRecID = await getDNSRecID(DDNS_DOMAIN, dnsRecs);
+  console.log(`Record ID: ${dnsRecID}`);
 })();
