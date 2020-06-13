@@ -30,7 +30,7 @@ async function getDNSZoneID(root_domain) {
 }
 
 // Get DNS Records for a given zone_id
-async function getDNSRec(zone_id) {
+async function getDNSRecs(zone_id) {
   res = await fetch(
     "https://api.cloudflare.com/client/v4/zones/" + zone_id + "/dns_records",
     {
@@ -47,10 +47,10 @@ async function getDNSRec(zone_id) {
 }
 
 // Get DNS Record ID from array of JSON dns records
-async function getDNSRecID(ddns_domain, dns_recs) {
+async function getDNSRecObj(ddns_domain, dns_recs) {
   for (let i = 0; i < dns_recs.length; i++) {
     if (dns_recs[i].name === ddns_domain) {
-      return dns_recs[i].id;
+      return dns_recs[i];
     }
   }
 
@@ -65,9 +65,9 @@ async function getDNSRecID(ddns_domain, dns_recs) {
   const zoneID = await getDNSZoneID(ROOT_DOMAIN);
   console.log(`CF Zone ID: ${zoneID}`);
 
-  const dnsRecs = await getDNSRec(zoneID);
+  const dnsRecs = await getDNSRecs(zoneID);
   console.log(`DNS Records: ${dnsRecs}`);
 
-  const dnsRecID = await getDNSRecID(DDNS_DOMAIN, dnsRecs);
+  const dnsRecID = await getDNSRecObj(DDNS_DOMAIN, dnsRecs);
   console.log(`Record ID: ${dnsRecID}`);
 })();
