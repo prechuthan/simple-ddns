@@ -1,0 +1,23 @@
+{
+  "name": "simple-ddns",
+  "version": "1.0.0",
+  "description": "Automated Cloudflare DNS updates for Dynamic IPs",
+  "main": "core.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/prechuthan/simple-ddns.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/prechuthan/simple-ddns/issues"
+  },
+  "homepage": "https://github.com/prechuthan/simple-ddns#readme",
+  "dependencies": {
+    "node-fetch": "^2.6.0"
+  }
+}
