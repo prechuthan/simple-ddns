@@ -1,3 +1,4 @@
+require("dotenv").config();
 const fetch = require("node-fetch");
 
 // TODO consider switching to json config file instead
