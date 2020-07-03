@@ -1,5 +1,6 @@
 const fetch = require("node-fetch");
 
+// TODO consider switching to json config file instead
 const ENV_VARS = new Map([
   ["CF_API_TOKEN", process.env.CF_API_TOKEN],
   ["ROOT_DOMAIN", process.env.ROOT_DOMAIN],
@@ -40,7 +41,7 @@ async function getDNSZoneID(root_domain) {
 
   res = await fetch("https://api.cloudflare.com/client/v4/zones?" + params, {
     headers: {
-      Authorization: ENV_VARS.get(CF_API_TOKEN),
+      Authorization: `Bearer ${ENV_VARS.get("CF_API_TOKEN")}`,
     },
   });
   body = await res.json();
@@ -56,7 +57,7 @@ async function getDNSRecs(zone_id) {
     "https://api.cloudflare.com/client/v4/zones/" + zone_id + "/dns_records",
     {
       headers: {
-        Authorization: ENV_VARS.get(CF_API_TOKEN),
+        Authorization: `Bearer ${ENV_VARS.get("CF_API_TOKEN")}`,
       },
     }
   );
@@ -85,12 +86,12 @@ async function getDNSRecObj(ddns_domain, dns_recs) {
   const curIPAddr = await getIPAddr();
   console.log(`Public IP: ${curIPAddr}`);
 
-  const zoneID = await getDNSZoneID(ENV_VARS.get(ROOT_DOMAIN));
+  const zoneID = await getDNSZoneID(ENV_VARS.get("ROOT_DOMAIN"));
   console.log(`CF Zone ID: ${zoneID}`);
 
   const dnsRecs = await getDNSRecs(zoneID);
   console.log(`DNS Records: ${dnsRecs}`);
 
-  const dnsRecID = await getDNSRecObj(ENV_VARS.get(DDNS_DOMAIN), dnsRecs);
+  const dnsRecID = await getDNSRecObj(ENV_VARS.get("DDNS_DOMAIN"), dnsRecs);
   console.log(`Record ID: ${dnsRecID}`);
 })();
