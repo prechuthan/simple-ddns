@@ -1,8 +1,29 @@
 const fetch = require("node-fetch");
 
-const CF_API_TOKEN = process.env.CF_API_TOKEN;
-const ROOT_DOMAIN = process.env.ROOT_DOMAIN;
-const DDNS_DOMAIN = process.env.DDNS_DOMAIN;
+const ENV_VARS = new Map([
+  ["CF_API_TOKEN", process.env.CF_API_TOKEN],
+  ["ROOT_DOMAIN", process.env.ROOT_DOMAIN],
+  ["DDNS_DOMAIN", process.env.DDNS_DOMAIN],
+]);
+
+// Check if env vars are present
+function checkEnvVars(ENV_VARS) {
+  let validated = true;
+
+  for (const [env_var, value] of ENV_VARS) {
+    if (!value) {
+      console.log(
+        `[!] Environment variable ${env_var} is not set, current value is ${value}.`
+      );
+      validated = false;
+    }
+  }
+
+  if (!validated) {
+    console.log("[X] Please ensure environment variables are set.");
+    process.exit(9);
+  }
+}
 
 // Gets current IP address
 const getIPAddr = async () => {
@@ -19,7 +40,7 @@ async function getDNSZoneID(root_domain) {
 
   res = await fetch("https://api.cloudflare.com/client/v4/zones?" + params, {
     headers: {
-      Authorization: CF_API_TOKEN,
+      Authorization: ENV_VARS.get(CF_API_TOKEN),
     },
   });
   body = await res.json();
@@ -35,7 +56,7 @@ async function getDNSRecs(zone_id) {
     "https://api.cloudflare.com/client/v4/zones/" + zone_id + "/dns_records",
     {
       headers: {
-        Authorization: CF_API_TOKEN,
+        Authorization: ENV_VARS.get(CF_API_TOKEN),
       },
     }
   );
@@ -59,15 +80,17 @@ async function getDNSRecObj(ddns_domain, dns_recs) {
 
 // Prints out IP address + CF Zone ID + DNS Recs + DNS Rec ID
 (async () => {
+  checkEnvVars(ENV_VARS);
+
   const curIPAddr = await getIPAddr();
   console.log(`Public IP: ${curIPAddr}`);
 
-  const zoneID = await getDNSZoneID(ROOT_DOMAIN);
+  const zoneID = await getDNSZoneID(ENV_VARS.get(ROOT_DOMAIN));
   console.log(`CF Zone ID: ${zoneID}`);
 
   const dnsRecs = await getDNSRecs(zoneID);
   console.log(`DNS Records: ${dnsRecs}`);
 
-  const dnsRecID = await getDNSRecObj(DDNS_DOMAIN, dnsRecs);
+  const dnsRecID = await getDNSRecObj(ENV_VARS.get(DDNS_DOMAIN), dnsRecs);
   console.log(`Record ID: ${dnsRecID}`);
 })();
