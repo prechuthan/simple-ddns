@@ -80,6 +80,35 @@ async function getDNSRecObj(ddns_domain, dns_recs) {
   return null;
 }
 
+// Update current DDNS record iff change in public IP address
+async function updateDDNSRec(cur_ip_addr, ddns_rec) {
+  if (cur_ip_addr === ddns_rec.content) {
+    return false;
+  }
+
+  data = {
+    type: "A",
+    name: "ddnstest.preshant.com",
+    content: cur_ip_addr,
+    ttl: 1,
+    proxied: false,
+  };
+
+  res = await fetch(
+    `https://api.cloudflare.com/client/v4/zones/${ddns_rec.zone_id}/dns_records/${ddns_rec.id}`,
+    {
+      method: "put",
+      body: JSON.stringify(data),
+      headers: {
+        Authorization: `Bearer ${ENV_VARS.get("CF_API_TOKEN")}`,
+      },
+    }
+  );
+  body = await res.json();
+
+  return body.success;
+}
+
 // Prints out IP address + CF Zone ID + DNS Recs + DNS Rec ID
 (async () => {
   checkEnvVars(ENV_VARS);
@@ -93,6 +122,9 @@ async function getDNSRecObj(ddns_domain, dns_recs) {
   const dnsRecs = await getDNSRecs(zoneID);
   console.log(`DNS Records: ${dnsRecs}`);
 
-  const dnsRecID = await getDNSRecObj(ENV_VARS.get("DDNS_DOMAIN"), dnsRecs);
-  console.log(`Record ID: ${dnsRecID}`);
+  const ddnsRec = await getDNSRecObj(ENV_VARS.get("DDNS_DOMAIN"), dnsRecs);
+  console.log(`DDNS Record: ${ddnsRec}`);
+
+  const isUpdated = await updateDDNSRec(curIPAddr, ddnsRec);
+  console.log(`DDNS updated? ${isUpdated}`);
 })();
