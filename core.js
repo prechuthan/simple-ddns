@@ -1,5 +1,6 @@
 require("dotenv").config();
 const fetch = require("node-fetch");
+const dayjs = require("dayjs");
 
 // TODO consider switching to json config file instead
 const ENV_VARS = new Map([
@@ -109,22 +110,26 @@ async function updateDDNSRec(cur_ip_addr, ddns_rec) {
   return body.success;
 }
 
-// Prints out IP address + CF Zone ID + DNS Recs + DNS Rec ID
+// Runs the main program
 (async () => {
   checkEnvVars(ENV_VARS);
 
   const curIPAddr = await getIPAddr();
-  console.log(`Public IP: ${curIPAddr}`);
+  console.log(
+    `[${dayjs().format("YYYY-MM-DD HH:mm:ss")}]\tPublic IP:\t${curIPAddr}`
+  );
 
   const zoneID = await getDNSZoneID(ENV_VARS.get("ROOT_DOMAIN"));
-  console.log(`CF Zone ID: ${zoneID}`);
-
   const dnsRecs = await getDNSRecs(zoneID);
-  console.log(`DNS Records: ${dnsRecs}`);
-
   const ddnsRec = await getDNSRecObj(ENV_VARS.get("DDNS_DOMAIN"), dnsRecs);
-  console.log(`DDNS Record: ${ddnsRec}`);
+  console.log(
+    `[${dayjs().format("YYYY-MM-DD HH:mm:ss")}]\tDDNS IP:\t${ddnsRec.content}`
+  );
 
   const isUpdated = await updateDDNSRec(curIPAddr, ddnsRec);
-  console.log(`DDNS updated? ${isUpdated}`);
+  console.log(
+    `[${dayjs().format(
+      "YYYY-MM-DD HH:mm:ss"
+    )}]\tDNS updated:\t${isUpdated.toString().toUpperCase()}`
+  );
 })();
