@@ -30,7 +30,7 @@ ROOT_DOMAIN="domain.com"
 DDNS_DOMAIN="dynamicdns.domain.com"
 ```
 
-### Setup cron to ensure `core.js` scheduled runs
+### Setup `core.js` cron for scheduled runs
 
 ```
 # Example crontab to ensure core.js is run every minute
@@ -49,4 +49,4 @@ Read [this](https://www.ostechnix.com/a-beginners-guide-to-cron-jobs/) for more 
 
 ## 🎉 Contribute
 
-Want to comtribute to this project? Simply open an issue and send in a PR! 😃
+Want to contribute to this project? Simply open an issue and send in a PR! 😃
