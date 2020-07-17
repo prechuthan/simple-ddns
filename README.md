@@ -34,6 +34,7 @@ DDNS_DOMAIN="dynamicdns.domain.com"
 
 ```
 # Example crontab to ensure core.js is run every minute
+
 # with output logs stored in simple-ddns.log
 
 * * * * *    /path/to/nodejs    /path/to/core.js    >>    /any/path/simple-ddns.log
@@ -50,6 +51,7 @@ Read [this](https://www.ostechnix.com/a-beginners-guide-to-cron-jobs/) for more 
 #### Version 1.0
 
 - Initial release of simple-ddns
+
 
 ## 🎉 Contribute
 
