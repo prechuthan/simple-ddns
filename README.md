@@ -35,17 +35,23 @@ DDNS_DOMAIN="dynamicdns.domain.com"
 ```
 # Example crontab to ensure core.js is run every minute
 
-* * * * *    /path/to/nodejs    /path/to/core.js
+# with output logs stored in simple-ddns.log
+
+* * * * *    /path/to/nodejs    /path/to/core.js    >>    /any/path/simple-ddns.log
 ```
 
 Read [this](https://www.ostechnix.com/a-beginners-guide-to-cron-jobs/) for more info about cron.
 
-## 💥 Known Issues
+## 💥 Version History
+
+#### Version 1.01
+
+- Fixes an issue where envrionment variables were not set if script was run as a cron job
 
 #### Version 1.0
 
-- Unexpected behaviour if unable to get current public IP address
-- Exception thrown if unable to search for _ROOT_DOMAIN_ or _DDNS_DOMAIN_ in Cloudflare
+- Initial release of simple-ddns
+
 
 ## 🎉 Contribute
 
