@@ -89,7 +89,7 @@ async function updateDDNSRec(cur_ip_addr, ddns_rec) {
 
   data = {
     type: "A",
-    name: "ddnstest.preshant.com",
+    name: ENV_VARS.get("DDNS_DOMAIN"),
     content: cur_ip_addr,
     ttl: 1,
     proxied: false,
