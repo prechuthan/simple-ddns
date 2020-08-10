@@ -44,7 +44,11 @@ Read [this](https://www.ostechnix.com/a-beginners-guide-to-cron-jobs/) for more 
 
 ## 💥 Version History
 
-#### Version 1.01
+#### Version 1.0.2
+
+- Fixes an issue where DNS records would not update domain specified in .env file
+
+#### Version 1.0.1
 
 - Fixes an issue where envrionment variables were not set if script was run as a cron job
 
